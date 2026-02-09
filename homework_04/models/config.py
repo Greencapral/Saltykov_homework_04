@@ -4,8 +4,8 @@ from sqlalchemy import URL
 
 BASE_DIR = Path(__file__).resolve().parent
 
-SQLA_DB_URL = URL.create(
-    drivername="postgresql+psycopg",
+SQLA_DB_URL_ASYNC = URL.create(
+    drivername="postgresql+asyncpg",
     username="adm",
     password="password",
     host="localhost",

@@ -1,11 +1,13 @@
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker
 
 import homework_04.models.config as config
 
-engine = create_engine(
-    url=config.SQLA_DB_URL,
+async_engine = create_async_engine(
+    url=config.SQLA_DB_URL_ASYNC,
     echo=config.SQLA_DB_ECHO,
 )
 
-Session = sessionmaker(bind=engine)
+ASYNC_Session = async_sessionmaker(
+    bind=async_engine,
+    expire_on_commit=False,
+)

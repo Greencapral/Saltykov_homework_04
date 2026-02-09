@@ -36,17 +36,11 @@ def posts_data():
 def check_data_match(items_from_db, items_from_remote, args_mapping: dict):
     assert len(items_from_db) == len(items_from_remote)
     db_data = {
-        item.id: [
-            getattr(item, k)
-            for k in args_mapping.keys()
-        ]
+        item.id: [getattr(item, k) for k in args_mapping.keys()]
         for item in items_from_db
     }
     remote_data = {
-        item["id"]: [
-            item[k]
-            for k in args_mapping.values()
-        ]
+        item["id"]: [item[k] for k in args_mapping.values()]
         for item in items_from_remote
     }
     assert db_data == remote_data
@@ -55,13 +49,17 @@ def check_data_match(items_from_db, items_from_remote, args_mapping: dict):
 async def test_main(users_data, posts_data):
     await module_main.async_main()
 
-    stmt_query_users = select(module_models.User).options(selectinload(module_models.User.posts))
-    stmt_query_posts = select(module_models.Post).options(joinedload(module_models.Post.user))
+    stmt_query_users = select(module_models.User).options(
+        selectinload(module_models.User.posts)
+    )
+    stmt_query_posts = select(module_models.Post).options(
+        joinedload(module_models.Post.user)
+    )
 
     users = []
     posts = []
 
-    async with module_models.Session() as session:
+    async with module_models.ASYNC_Session() as session:
         # there're problems with asyncio.gather in pytest :/
         # res_users, res_posts = await asyncio.gather(
         #     session.execute(stmt_query_users),
@@ -75,16 +73,24 @@ async def test_main(users_data, posts_data):
 
     assert len(posts) == len(posts_data)
 
-    check_data_match(users, users_data, args_mapping=dict(
-        name="name",
-        username="username",
-        email="email",
-    ))
-    check_data_match(posts, posts_data, args_mapping=dict(
-        user_id="userId",
-        title="title",
-        body="body",
-    ))
+    check_data_match(
+        users,
+        users_data,
+        args_mapping=dict(
+            name="name",
+            username="username",
+            email="email",
+        ),
+    )
+    check_data_match(
+        posts,
+        posts_data,
+        args_mapping=dict(
+            user_id="userId",
+            title="title",
+            body="body",
+        ),
+    )
 
     for post in posts:
         # check relationships

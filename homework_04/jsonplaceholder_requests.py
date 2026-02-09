@@ -2,15 +2,14 @@
 создайте асинхронные функции для выполнения запросов к ресурсам (используйте aiohttp)
 """
 
-USERS_DATA_URL = "https://jsonplaceholder.typicode.com/users/1"
-POSTS_DATA_URL = "https://jsonplaceholder.typicode.com/posts/1"
+USERS_DATA_URL = "https://jsonplaceholder.typicode.com/users/"
+POSTS_DATA_URL = "https://jsonplaceholder.typicode.com/posts/"
 
 
-async def fetch_json(session,tp: str) -> dict|None:
+async def fetch_json(session, number: int, tp: str) -> dict | None:
     if tp == "user":
-        url = USERS_DATA_URL
+        url = f"{USERS_DATA_URL}{number}"
     elif tp == "post":
-        url = POSTS_DATA_URL
+        url = f"{POSTS_DATA_URL}{number}"
     async with session.get(url) as response:
         return await response.json()
-
