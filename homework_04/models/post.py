@@ -8,6 +8,8 @@ if TYPE_CHECKING:
 
 
 class Post(Base):
+    max_title_len = 70
+    max_body_len = 200
     id: Mapped[int] = mapped_column(primary_key=True)
     user_id: Mapped[int] = mapped_column(
         ForeignKey("users.id"),
@@ -18,8 +20,8 @@ class Post(Base):
         back_populates="posts",
     )
     __table_args__ = (
-        CheckConstraint(func.length(title) <= 70, "title_length"),
-        CheckConstraint(func.length(body) <= 200, "body_length"),
+        CheckConstraint(func.length(title) <= max_title_len, "title_length"),
+        CheckConstraint(func.length(body) <= max_body_len, "body_length"),
     )
 
     def __str__(self) -> str:
