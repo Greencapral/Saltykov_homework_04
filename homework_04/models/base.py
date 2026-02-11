@@ -11,8 +11,19 @@ convention = {
 
 
 class Base(DeclarativeBase):
+    """Базовая декларативная база для моделей SQLAlchemy."""
+
+    #: Набор метаданных с соглашением именования таблиц
     metadata = MetaData(naming_convention=convention)
 
     @declared_attr.directive
     def __tablename__(self) -> str:
+        """
+        Автоматическое формирование названия таблицы исходя из имени класса.
+
+        Название таблицы получается путем преобразования имени класса в нижний регистр и добавления суффикса "s".
+
+        :return: Название таблицы в формате "<имя_класса>s".
+        """
+
         return f"{self.__name__.lower()}s"
